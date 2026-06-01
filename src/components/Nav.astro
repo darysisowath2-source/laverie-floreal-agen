@@ -1,0 +1,98 @@
+---
+// Nav éditoriale : wordmark + ancres desktop + hamburger mobile + CTA téléphone.
+---
+<header class="fixed top-0 inset-x-0 z-50 backdrop-blur-xl bg-bg/60 border-b border-line">
+  <nav class="max-w-[1240px] mx-auto px-5 sm:px-8 h-14 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-2" aria-label="Laverie du Floréal, retour en haut">
+      <span class="w-1.5 h-1.5 rounded-full bg-accent inline-block"></span>
+      <span class="font-medium tracking-tight text-[15px]">Laverie du Floréal</span>
+    </a>
+
+    <div class="hidden md:flex items-center gap-7 text-[13px] text-muted">
+      <a href="#tarifs" class="hover:text-fg transition-colors">Tarifs</a>
+      <a href="#equipements" class="hover:text-fg transition-colors">Équipements</a>
+      <a href="#visite" class="hover:text-fg transition-colors">Horaires</a>
+      <a href="#faq" class="hover:text-fg transition-colors">FAQ</a>
+      <a href="#contact" class="hover:text-fg transition-colors">Contact</a>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <a
+        href="tel:0768740073"
+        class="inline-flex items-center gap-2 text-[13px] font-medium border border-line-strong rounded-sm px-3 py-1.5 hover:border-accent hover:text-accent transition-colors"
+      >
+        <span class="hidden sm:inline">Appeler</span>
+        <span class="sm:hidden">Tél.</span>
+        <span aria-hidden="true">→</span>
+      </a>
+
+      <button
+        id="nav-toggle"
+        class="md:hidden flex flex-col justify-center gap-[5px] w-8 h-8 -mr-1 shrink-0"
+        aria-label="Ouvrir le menu"
+        aria-expanded="false"
+        aria-controls="nav-mobile"
+      >
+        <span class="nav-bar block h-px w-5 bg-fg origin-center transition-all duration-200"></span>
+        <span class="nav-bar block h-px w-5 bg-fg origin-center transition-all duration-200 opacity-100"></span>
+        <span class="nav-bar block h-px w-5 bg-fg origin-center transition-all duration-200"></span>
+      </button>
+    </div>
+  </nav>
+
+  <div
+    id="nav-mobile"
+    class="hidden border-t border-line bg-bg"
+    role="navigation"
+    aria-label="Menu mobile"
+  >
+    <ul class="max-w-[1240px] mx-auto px-5 py-2 divide-y divide-line">
+      <li><a href="#tarifs" class="mobile-link">Tarifs</a></li>
+      <li><a href="#equipements" class="mobile-link">Équipements</a></li>
+      <li><a href="#visite" class="mobile-link">Horaires</a></li>
+      <li><a href="#faq" class="mobile-link">FAQ</a></li>
+      <li><a href="#contact" class="mobile-link">Contact</a></li>
+    </ul>
+  </div>
+</header>
+
+<style>
+  .mobile-link {
+    display: block;
+    padding: 0.875rem 0;
+    font-size: 1rem;
+    color: var(--color-muted-strong);
+    transition: color 150ms ease;
+  }
+  .mobile-link:hover { color: var(--color-fg); }
+
+  /* Hamburger → X quand ouvert */
+  #nav-toggle[aria-expanded="true"] .nav-bar:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+  #nav-toggle[aria-expanded="true"] .nav-bar:nth-child(2) {
+    opacity: 0;
+  }
+  #nav-toggle[aria-expanded="true"] .nav-bar:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+</style>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const menu   = document.getElementById('nav-mobile');
+
+  toggle?.addEventListener('click', () => {
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+    menu?.classList.toggle('hidden', isOpen);
+  });
+
+  // Fermer le menu au clic sur un lien
+  menu?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      toggle?.setAttribute('aria-expanded', 'false');
+      menu.classList.add('hidden');
+    });
+  });
+</script>

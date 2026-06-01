@@ -1,0 +1,82 @@
+---
+import '../styles/global.css'
+
+interface Props {
+  title?: string
+  description?: string
+}
+
+const {
+  title = 'Laverie du Floréal · Agen',
+  description = "Laverie automatique rue Bajon à Agen. Machines grande capacité, grands séchoirs, point relais colis, ouverte 7 jours sur 7.",
+} = Astro.props
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f7f5ee" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Hanken+Grotesk:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1521656693074-0ef32e80a5d5?auto=format&fit=crop&w=1200&q=80" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="800" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1521656693074-0ef32e80a5d5?auto=format&fit=crop&w=1200&q=80" />
+  </head>
+  <body class="bg-bg text-fg antialiased">
+    <slot />
+
+    <script>
+      // Apparition au scroll, vanilla JS, ~600 octets gzippés
+      const targets = document.querySelectorAll('.reveal-on-scroll');
+      if ('IntersectionObserver' in window && targets.length) {
+        const io = new IntersectionObserver((entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              io.unobserve(entry.target);
+            }
+          }
+        }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+        targets.forEach((el) => io.observe(el));
+      } else {
+        targets.forEach((el) => el.classList.add('is-visible'));
+      }
+    </script>
+
+    <script>
+      import Lenis from 'lenis'
+      const lenis = new Lenis({
+        duration: 1.1,
+        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      })
+
+      // Câbler tous les liens d'ancre sur Lenis pour un scroll fluide
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener('click', (e) => {
+          e.preventDefault()
+          const id = (anchor as HTMLAnchorElement).getAttribute('href')
+          if (id) lenis.scrollTo(id, { offset: -72 })
+        })
+      })
+
+      function raf(time: number) { lenis.raf(time); requestAnimationFrame(raf) }
+      requestAnimationFrame(raf)
+    </script>
+  </body>
+</html>

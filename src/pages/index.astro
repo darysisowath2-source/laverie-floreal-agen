@@ -1,0 +1,408 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Nav from '../components/Nav.astro'
+import Footer from '../components/Footer.astro'
+
+// État des infos :
+//   CONFIRMÉ via recherche web (bottin.fr, maps24.fr, La Poste/Pickup) :
+//     - adresse : 16 rue Bajon, 47000 Agen
+//     - point relais colis (Colissimo / Pickup) sur place
+//     - "grands séchoirs" mentionnés dans les avis
+//     - note ~4,3 à 5/5 (peu d'avis)
+//   À CONFIRMER avec le client (placeholders plausibles flaggés) :
+//     - horaires exacts : sources divergentes (6h-22h / 7h-22h / 8h-20h). Mis 7h-22h.
+//     - téléphone (07 68 74 00 73 trouvé en ligne, à vérifier)
+//     - tarifs réels des machines (valeurs ci-dessous = ESTIMATIONS)
+//     - lessive incluse ou en vente sur place
+//     - capacités exactes des machines
+//     - photos réelles du lieu (remplacer les Unsplash génériques ci-dessous)
+
+const hero = 'https://images.unsplash.com/photo-1550025005-05b9002486c5?auto=format&fit=crop&w=1600&q=80'
+const imgMachines = 'https://images.unsplash.com/photo-1604335398980-ededcadcc37d?auto=format&fit=crop&w=1400&q=80'
+const imgInterieur = 'https://images.unsplash.com/photo-1521656693074-0ef32e80a5d5?auto=format&fit=crop&w=1400&q=80'
+
+const mapsUrl = 'https://www.google.com/maps/search/Laverie+du+Floreal+16+rue+Bajon+Agen/@44.2049,0.6212,17z'
+
+// TARIFS À CONFIRMER — estimations plausibles
+const tarifs = [
+  { capacite: '7 kg',  prix: '4,50 €', duree: '30 min', usage: 'quotidien' },
+  { capacite: '13 kg', prix: '8 €',    duree: '40 min', usage: 'familial'  },
+  { capacite: '18 kg', prix: '11 €',   duree: '50 min', usage: 'couette'   },
+]
+
+const horaires = [
+  { jour: 'Tous les jours', heures: '7h · 22h' },
+  { jour: 'Dernier lavage',  heures: '21h' },
+]
+
+const atouts = [
+  'Grands séchoirs haute capacité',
+  'Point relais colis (Colissimo · Pickup)',
+  'Machines jusqu\'à 18 kg, idéales couettes',
+  'CB, sans contact et espèces acceptés',
+  'Ouvert 7 jours sur 7',
+]
+
+const chiffres = [
+  { val: '4,3★',  label: 'avis Google' },
+  { val: '7j/7',  label: 'ouvert toute l\'année' },
+  { val: '18 kg', label: 'plus grande machine' },
+  { val: '≈ 1h',  label: 'laver et sécher' },
+]
+
+const faq = [
+  {
+    q: 'Faut-il apporter sa lessive ?',
+    a: "La lessive et l'adoucissant sont disponibles sur place. Vous pouvez aussi apporter les vôtres si vous préférez un produit spécifique.",
+  },
+  {
+    q: 'Puis-je récupérer un colis à la laverie ?',
+    a: "Oui. La Laverie du Floréal est aussi un point relais colis (Colissimo et Pickup). Pratique : vous récupérez ou déposez vos colis pendant que votre linge tourne.",
+  },
+  {
+    q: 'La couette est-elle acceptée ?',
+    a: 'Oui. La machine 18 kg accueille une couette deux personnes confortablement. Pour les couettes très épaisses, venez plutôt en début de journée pour disposer du temps de séchage nécessaire.',
+  },
+  {
+    q: 'Comment payer ?',
+    a: 'Espèces, carte bancaire et paiement sans contact à chaque machine. Pas besoin de monnaie exacte.',
+  },
+  {
+    q: 'Combien de temps prévoir ?',
+    a: 'Comptez 30 à 45 minutes pour le lavage selon la taille, plus 20 à 30 minutes de séchage. Une heure complète suffit dans la grande majorité des cas.',
+  },
+]
+---
+<Layout
+  title="Laverie du Floréal · Agen"
+  description="Laverie automatique rue Bajon à Agen. Machines grande capacité, grands séchoirs, point relais colis, ouverte 7 jours sur 7."
+>
+  <Nav />
+
+  <main id="top" class="pt-14">
+
+    <!-- Hero -->
+    <section class="border-b border-line relative overflow-hidden">
+
+      <!-- Brin fleuri décoratif, coin supérieur droit, très discret -->
+      <svg
+        aria-hidden="true"
+        class="absolute top-0 right-0 w-[420px] h-[420px] pointer-events-none select-none"
+        style="opacity: 0.08; color: var(--color-accent);"
+        viewBox="0 0 420 420"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <!-- Tige principale qui descend en s'incurvant -->
+        <path d="M330 12 C300 90 312 160 268 226 C236 274 214 300 196 352" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- Feuilles le long de la tige -->
+        <path d="M316 70 C296 60 280 66 270 84 C290 92 308 88 316 70 Z" fill="currentColor" opacity="0.55"/>
+        <path d="M308 120 C330 116 346 124 352 144 C330 150 314 142 308 120 Z" fill="currentColor" opacity="0.55"/>
+        <path d="M286 178 C266 170 250 176 242 194 C262 202 280 196 286 178 Z" fill="currentColor" opacity="0.55"/>
+        <path d="M252 250 C274 248 290 258 294 278 C272 282 256 272 252 250 Z" fill="currentColor" opacity="0.5"/>
+        <path d="M224 312 C204 306 188 314 182 332 C202 338 218 330 224 312 Z" fill="currentColor" opacity="0.5"/>
+        <!-- Fleur en haut (5 pétales autour d'un coeur) -->
+        <g>
+          <ellipse cx="330" cy="16" rx="7" ry="12" fill="currentColor"/>
+          <ellipse cx="345" cy="26" rx="7" ry="12" transform="rotate(60 345 26)" fill="currentColor"/>
+          <ellipse cx="340" cy="44" rx="7" ry="12" transform="rotate(120 340 44)" fill="currentColor"/>
+          <ellipse cx="320" cy="44" rx="7" ry="12" transform="rotate(-120 320 44)" fill="currentColor"/>
+          <ellipse cx="315" cy="26" rx="7" ry="12" transform="rotate(-60 315 26)" fill="currentColor"/>
+          <circle cx="330" cy="30" r="4" fill="var(--color-bg)"/>
+        </g>
+        <!-- Petite fleur secondaire plus bas -->
+        <g opacity="0.7">
+          <ellipse cx="196" cy="350" rx="5" ry="9" fill="currentColor"/>
+          <ellipse cx="207" cy="358" rx="5" ry="9" transform="rotate(60 207 358)" fill="currentColor"/>
+          <ellipse cx="203" cy="370" rx="5" ry="9" transform="rotate(120 203 370)" fill="currentColor"/>
+          <ellipse cx="189" cy="370" rx="5" ry="9" transform="rotate(-120 189 370)" fill="currentColor"/>
+          <ellipse cx="185" cy="358" rx="5" ry="9" transform="rotate(-60 185 358)" fill="currentColor"/>
+          <circle cx="196" cy="362" r="3" fill="var(--color-bg)"/>
+        </g>
+      </svg>
+
+      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 pt-20 sm:pt-28 pb-12 sm:pb-16 text-center">
+
+        <div class="hero-item flex items-center justify-center gap-3 mb-7" style="--hi: 0">
+          <span class="dot"></span>
+          <span class="eyebrow">Agen · Rue Bajon</span>
+        </div>
+
+        <h1 class="font-medium tracking-tight leading-[1.0] max-w-3xl mx-auto" style="font-size: var(--text-display-xl);">
+          <span class="hero-item block" style="--hi: 1">Du linge frais,</span>
+          <em class="hero-item font-display italic font-light block" style="--hi: 2">et l'esprit tranquille.</em>
+        </h1>
+
+        <div class="hero-item mt-10 flex flex-wrap items-center justify-center gap-3" style="--hi: 3">
+          <a href="#tarifs" class="cta">
+            Voir les tarifs
+            <span aria-hidden="true">→</span>
+          </a>
+          <a href="#visite" class="cta-ghost">Horaires & accès</a>
+        </div>
+
+        <div class="hero-item mt-8 flex items-center justify-center gap-3 text-sm" style="--hi: 4">
+          <span id="badge-open" class="inline-flex items-center gap-2 px-3 py-1.5 bg-accent-soft text-accent rounded-sm font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent inline-block animate-pulse"></span>
+            Ouvert maintenant
+          </span>
+          <span id="badge-closed" style="display:none" class="inline-flex items-center gap-2 px-3 py-1.5 bg-bg-elev text-muted rounded-sm font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-muted inline-block"></span>
+            Fermé
+          </span>
+          <span id="badge-label" class="text-muted">jusqu'à 22h</span>
+        </div>
+        <script>
+          {
+            const min = new Date().getHours() * 60 + new Date().getMinutes();
+            const isOpen = min >= 420 && min < 1320; // 7h00–22h00 (à confirmer)
+            if (!isOpen) {
+              document.getElementById('badge-open').style.display = 'none';
+              document.getElementById('badge-closed').style.display = '';
+              document.getElementById('badge-label').textContent =
+                min < 420 ? 'ouvre à 7h' : 'ouvre demain à 7h';
+            }
+          }
+        </script>
+      </div>
+
+      <!-- Image compacte pleine largeur sous le texte -->
+      <figure class="hero-item w-full aspect-[2/1] sm:aspect-[3/1] overflow-hidden bg-bg-elev" style="--hi: 5">
+        <img
+          src={hero}
+          alt="Intérieur lumineux de la Laverie du Floréal, Agen"
+          class="w-full h-full object-cover object-center"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </figure>
+    </section>
+
+    <!-- Social proof strip -->
+    <div class="border-b border-line bg-bg-elev">
+      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm text-muted">
+        <span class="flex items-center gap-2">
+          <span class="text-accent font-medium">★★★★★</span>
+          <span>Recommandée par ses habitués</span>
+        </span>
+        <span class="hidden sm:block w-px h-4 bg-line-strong"></span>
+        <span>Laverie & point relais colis, en plein Agen</span>
+      </div>
+    </div>
+
+    <!-- Chiffres clés -->
+    <div class="border-b border-line reveal-on-scroll">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-px" style="background: rgba(181, 104, 59, 0.15);">
+        {chiffres.map((c) => (
+          <div class="px-6 sm:px-12 py-14 sm:py-16 text-center" style="background: #f1ecde;">
+            <p class="font-display italic font-light leading-none" style="font-size: clamp(2.75rem, 5vw, 4.25rem); color: var(--color-accent);">{c.val}</p>
+            <p class="mt-4 text-xs uppercase" style="color: var(--color-muted); letter-spacing: 0.14em;">{c.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Tarifs -->
+    <section id="tarifs" class="border-b border-line">
+      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-20 sm:py-28 reveal-on-scroll">
+        <div class="flex items-baseline justify-between flex-wrap gap-4 mb-12">
+          <div>
+            <p class="eyebrow mb-3">Tarifs</p>
+            <h2 class="font-medium tracking-tight" style="font-size: var(--text-h2);">
+              Clair, <em class="font-display italic font-light text-muted-strong">à la machine.</em>
+            </h2>
+          </div>
+          <p class="text-muted text-sm">Sans contact, espèces ou CB</p>
+        </div>
+
+        <div class="grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-line border-y border-line">
+          {tarifs.map((t) => (
+            <div class="py-10 sm:py-12 px-2 sm:px-8 text-center">
+              <p class="font-display italic font-light text-3xl sm:text-4xl text-muted-strong">{t.capacite}</p>
+              <p class="mt-6 sm:mt-8 font-medium tracking-tight leading-none" style="font-size: clamp(3rem, 6vw, 4.5rem);">{t.prix}</p>
+              <p class="mt-6 text-sm text-muted">
+                <span class="text-fg">{t.duree}</span><span class="mx-2">·</span>{t.usage}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div class="mt-10 flex flex-wrap items-baseline gap-x-8 gap-y-3 text-sm">
+          <span class="text-muted">+</span>
+          <span><span class="font-medium">Séchage</span> <span class="text-muted">1 € / 10 min</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Équipements -->
+    <section id="equipements" class="border-b border-line bg-bg-elev">
+      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-20 sm:py-28 grid md:grid-cols-12 gap-10 items-center reveal-on-scroll">
+
+        <div class="md:col-span-6 md:pr-6">
+          <p class="eyebrow mb-3">Sur place</p>
+          <h2 class="font-medium tracking-tight mb-10" style="font-size: var(--text-h2);">
+            Pensé pour <em class="font-display italic font-light text-muted-strong">vous faciliter l'attente.</em>
+          </h2>
+
+          <ul class="divide-y divide-line border-y border-line">
+            {atouts.map((a) => (
+              <li class="py-4 flex items-center gap-4">
+                <span class="dot"></span>
+                <span class="text-base sm:text-lg">{a}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <figure class="md:col-span-6 aspect-[5/4] overflow-hidden bg-bg-elev">
+          <img src={imgMachines} alt="Machines à laver à hublot, Laverie du Floréal" class="w-full h-full object-cover" loading="lazy" />
+        </figure>
+      </div>
+    </section>
+
+    <!-- Bandeau point relais colis (atout différenciant) -->
+    <section class="border-b border-line" style="background: var(--color-accent-soft);">
+      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-14 sm:py-16 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-12 reveal-on-scroll">
+        <div class="shrink-0">
+          <p class="eyebrow mb-2" style="color: var(--color-accent);">Aussi point relais</p>
+          <p class="font-display italic font-light leading-none" style="font-size: clamp(2.25rem, 4vw, 3.25rem); color: var(--color-accent);">Colissimo · Pickup</p>
+        </div>
+        <p class="text-lg sm:text-xl text-muted-strong leading-snug max-w-xl">
+          Déposez ou récupérez vos colis pendant que votre linge tourne. Deux courses en une, sans détour.
+        </p>
+      </div>
+    </section>
+
+    <!-- Photo break éditorial -->
+    <div class="relative aspect-[21/9] overflow-hidden border-b border-line">
+      <img
+        src={imgInterieur}
+        alt="Intérieur lumineux de la Laverie du Floréal"
+        class="w-full h-full object-cover"
+        loading="lazy"
+      />
+      <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(32,48,31,0.58) 0%, rgba(32,48,31,0.15) 100%);"></div>
+      <div class="absolute inset-0 flex items-center px-8 sm:px-16 lg:px-24">
+        <p class="font-display italic font-light max-w-xl leading-snug" style="font-size: clamp(1.75rem, 3.5vw, 3rem); color: var(--color-bg);">
+          Un linge soigné,<br/>au cœur d'Agen,<br/>7 jours sur 7.
+        </p>
+      </div>
+    </div>
+
+    <!-- Visite, horaires + adresse -->
+    <section id="visite" class="border-b border-line">
+      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-20 sm:py-28 grid lg:grid-cols-12 gap-12 reveal-on-scroll">
+        <div class="lg:col-span-5">
+          <p class="eyebrow mb-3">Nous trouver</p>
+          <h2 class="font-medium tracking-tight mb-8" style="font-size: var(--text-h2);">
+            <em class="font-display italic font-light">Rue Bajon,</em><br/>
+            en plein Agen.
+          </h2>
+
+          <p class="text-xl text-fg leading-snug">
+            16 rue Bajon<br/>
+            47000 Agen
+          </p>
+
+          <a
+            href={mapsUrl}
+            target="_blank"
+            rel="noopener"
+            class="mt-8 inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
+          >
+            Ouvrir dans Google Maps
+            <span aria-hidden="true">→</span>
+          </a>
+        </div>
+
+        <div class="lg:col-span-6 lg:col-start-7">
+          <p class="eyebrow mb-6">Horaires</p>
+          <ul class="divide-y divide-line border-y border-line">
+            {horaires.map((h) => (
+              <li class="flex items-baseline justify-between py-5">
+                <span class="text-lg">{h.jour}</span>
+                <span class="font-display text-2xl sm:text-3xl tracking-tight">{h.heures}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-5 text-sm text-muted">Dernier lavage 1h avant la fermeture.</p>
+        </div>
+
+        <div class="lg:col-span-12 mt-4 lg:mt-8">
+          <div class="relative aspect-[16/10] sm:aspect-[21/9] overflow-hidden border border-line bg-bg-elev">
+            <iframe
+              src="https://maps.google.com/maps?q=16+rue+Bajon+47000+Agen&z=17&output=embed"
+              class="absolute inset-0 w-full h-full"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Carte, Laverie du Floréal à Agen"
+            ></iframe>
+            <a
+              href={mapsUrl}
+              target="_blank"
+              rel="noopener"
+              class="absolute inset-0 z-10"
+              aria-label="Ouvrir la Laverie du Floréal dans Google Maps"
+            ></a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="border-b border-line bg-bg-elev">
+      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-20 sm:py-28 grid lg:grid-cols-12 gap-10 reveal-on-scroll">
+        <div class="lg:col-span-4">
+          <p class="eyebrow mb-3">Avant de venir</p>
+          <h2 class="font-medium tracking-tight" style="font-size: var(--text-h2);">
+            Questions <em class="font-display italic font-light text-muted-strong">fréquentes.</em>
+          </h2>
+        </div>
+        <div class="lg:col-span-8">
+          <ul class="border-y border-line divide-y divide-line">
+            {faq.map((item) => (
+              <li>
+                <details>
+                  <summary class="py-5 sm:py-6 flex items-center justify-between gap-6">
+                    <span class="text-base sm:text-lg font-medium pr-4">{item.q}</span>
+                    <span class="faq-toggle text-3xl text-muted leading-none font-light shrink-0">+</span>
+                  </summary>
+                  <p class="faq-answer pb-6 pr-12 text-muted-strong leading-relaxed">{item.a}</p>
+                </details>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="relative overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full blur-3xl" style="background: rgba(181, 104, 59, 0.18);"></div>
+        <div class="absolute top-1/4 right-1/4 w-[400px] h-[400px] rounded-full blur-2xl" style="background: rgba(181, 104, 59, 0.08);"></div>
+      </div>
+
+      <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8 py-24 sm:py-32 text-center reveal-on-scroll">
+        <p class="eyebrow mb-6">Contact</p>
+        <h2 class="font-medium tracking-tight max-w-2xl mx-auto leading-[1.05]" style="font-size: var(--text-display);">
+          Une question ?<br/>
+          <em class="font-display italic font-light text-muted-strong">On répond vite.</em>
+        </h2>
+
+        <div class="mt-12 flex flex-wrap items-center justify-center gap-3">
+          <a href="tel:0768740073" class="cta">
+            07 68 74 00 73
+            <span aria-hidden="true">→</span>
+          </a>
+          <a href="mailto:laveriedufloreal@gmail.com" class="cta-ghost">
+            laveriedufloreal@gmail.com
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <Footer />
+</Layout>

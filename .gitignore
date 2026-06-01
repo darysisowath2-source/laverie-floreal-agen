@@ -1,0 +1,11 @@
+﻿node_modules
+.astro
+dist
+.env
+.env.local
+.env.*.local
+.vercel
+.DS_Store
+
+# Documents privés (devis, factures) : ne jamais publier
+devis/

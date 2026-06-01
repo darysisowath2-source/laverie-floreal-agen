@@ -1,0 +1,39 @@
+---
+const year = new Date().getFullYear()
+---
+<footer class="border-t border-line mt-24">
+  <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4 text-sm">
+    <div>
+      <div class="flex items-center gap-2 mb-3">
+        <span class="w-1.5 h-1.5 rounded-full bg-accent inline-block"></span>
+        <span class="font-medium tracking-tight">Laverie du Floréal</span>
+      </div>
+      <p class="text-muted leading-relaxed">
+        Laverie automatique rue Bajon, à Agen. Grands séchoirs, point relais colis, ouverte 7 jours sur 7.
+      </p>
+    </div>
+
+    <div>
+      <p class="eyebrow mb-3">Adresse</p>
+      <p class="text-muted-strong">16 rue Bajon<br/>47000 Agen</p>
+    </div>
+
+    <div>
+      <p class="eyebrow mb-3">Horaires</p>
+      <p class="text-muted-strong">Tous les jours<br/>7h00, 22h00</p>
+    </div>
+
+    <div>
+      <p class="eyebrow mb-3">Contact</p>
+      <a href="tel:0768740073" class="block text-muted-strong hover:text-accent transition-colors">07 68 74 00 73</a>
+      <a href="mailto:laveriedufloreal@gmail.com" class="block text-muted hover:text-accent transition-colors text-xs mt-1">laveriedufloreal@gmail.com</a>
+    </div>
+  </div>
+
+  <div class="border-t border-line">
+    <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-muted">
+      <p>&copy; {year} Laverie du Floréal · Agen</p>
+      <p>Site réalisé par <a href="mailto:darysisowath@gmail.com" class="hover:text-accent transition-colors">Dary</a></p>
+    </div>
+  </div>
+</footer>
