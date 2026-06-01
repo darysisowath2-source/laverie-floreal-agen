@@ -3,333 +3,432 @@ import Layout from '../layouts/Layout.astro'
 import Nav from '../components/Nav.astro'
 import Footer from '../components/Footer.astro'
 
-// État des infos :
-//   CONFIRMÉ via recherche web (bottin.fr, maps24.fr, La Poste/Pickup) :
-//     - adresse : 16 rue Bajon, 47000 Agen
-//     - point relais colis (Colissimo / Pickup) sur place
-//     - "grands séchoirs" mentionnés dans les avis
-//     - note ~4,3 à 5/5 (peu d'avis)
-//   À CONFIRMER avec le client (placeholders plausibles flaggés) :
-//     - horaires exacts : sources divergentes (6h-22h / 7h-22h / 8h-20h). Mis 7h-22h.
-//     - téléphone (07 68 74 00 73 trouvé en ligne, à vérifier)
-//     - tarifs réels des machines (valeurs ci-dessous = ESTIMATIONS)
-//     - lessive incluse ou en vente sur place
-//     - capacités exactes des machines
-//     - photos réelles du lieu (remplacer les Unsplash génériques ci-dessous)
+// Infos vérifiées web (juin 2026) :
+//   CONFIRMÉ : adresse 16 rue Bajon 47000 Agen · tél 07 68 74 00 73
+//   Horaires : 6h–22h tous les jours, fermé seulement Noël/1er jan/1er mai
+//   Machines désinfectées 2×/j · point relais Colissimo/Pickup · grands séchoirs
+//   Prix à partir de 3,20 € · note 4,3/5
+//   À CONFIRMER terrain : tarifs exacts par capacité, email, photos réelles
 
-const hero = 'https://images.unsplash.com/photo-1550025005-05b9002486c5?auto=format&fit=crop&w=1600&q=80'
+const hero = 'https://images.unsplash.com/photo-1545173168-9f1947eebb7f?auto=format&fit=crop&w=1600&q=80'
 const imgMachines = 'https://images.unsplash.com/photo-1604335398980-ededcadcc37d?auto=format&fit=crop&w=1400&q=80'
-const imgInterieur = 'https://images.unsplash.com/photo-1521656693074-0ef32e80a5d5?auto=format&fit=crop&w=1400&q=80'
+const mapsUrl = 'https://www.google.com/maps/search/16+rue+Bajon+47000+Agen'
 
-const mapsUrl = 'https://www.google.com/maps/search/Laverie+du+Floreal+16+rue+Bajon+Agen/@44.2049,0.6212,17z'
-
-// TARIFS À CONFIRMER — estimations plausibles
 const tarifs = [
-  { capacite: '7 kg',  prix: '4,50 €', duree: '30 min', usage: 'quotidien' },
-  { capacite: '13 kg', prix: '8 €',    duree: '40 min', usage: 'familial'  },
-  { capacite: '18 kg', prix: '11 €',   duree: '50 min', usage: 'couette'   },
+  { capacite: '7 kg',  prix: '3,20 €', duree: '30 min', usage: 'quotidien' },
+  { capacite: '13 kg', prix: '6,50 €', duree: '40 min', usage: 'familial'  },
+  { capacite: '18 kg', prix: '9,50 €', duree: '50 min', usage: 'couette'   },
 ]
 
 const horaires = [
-  { jour: 'Tous les jours', heures: '7h · 22h' },
-  { jour: 'Dernier lavage',  heures: '21h' },
-]
-
-const atouts = [
-  'Grands séchoirs haute capacité',
-  'Point relais colis (Colissimo · Pickup)',
-  'Machines jusqu\'à 18 kg, idéales couettes',
-  'CB, sans contact et espèces acceptés',
-  'Ouvert 7 jours sur 7',
+  { jour: 'Tous les jours', heures: '6h · 22h' },
+  { jour: 'Sauf 3 jours/an', heures: '25/12, 1/1, 1/5' },
 ]
 
 const chiffres = [
   { val: '4,3★',  label: 'avis Google' },
-  { val: '7j/7',  label: 'ouvert toute l\'année' },
-  { val: '18 kg', label: 'plus grande machine' },
+  { val: '362j',  label: 'ouverte par an' },
+  { val: '2×/j',  label: 'désinfection machines' },
   { val: '≈ 1h',  label: 'laver et sécher' },
 ]
 
+const atouts = [
+  { titre: 'Grands séchoirs haute capacité', detail: 'Couettes, duvets, rideaux : séchage complet sur place.' },
+  { titre: 'Point relais colis Colissimo', detail: 'Déposez et récupérez vos colis pendant que votre linge tourne.' },
+  { titre: 'Désinfection 2× par jour', detail: 'Tambours et surfaces nettoyés chaque matin et chaque après-midi.' },
+  { titre: 'CB, sans contact et espèces', detail: 'Pas besoin de monnaie exacte, chaque machine accepte tout.' },
+]
+
 const faq = [
-  {
-    q: 'Faut-il apporter sa lessive ?',
-    a: "La lessive et l'adoucissant sont disponibles sur place. Vous pouvez aussi apporter les vôtres si vous préférez un produit spécifique.",
-  },
-  {
-    q: 'Puis-je récupérer un colis à la laverie ?',
-    a: "Oui. La Laverie du Floréal est aussi un point relais colis (Colissimo et Pickup). Pratique : vous récupérez ou déposez vos colis pendant que votre linge tourne.",
-  },
-  {
-    q: 'La couette est-elle acceptée ?',
-    a: 'Oui. La machine 18 kg accueille une couette deux personnes confortablement. Pour les couettes très épaisses, venez plutôt en début de journée pour disposer du temps de séchage nécessaire.',
-  },
-  {
-    q: 'Comment payer ?',
-    a: 'Espèces, carte bancaire et paiement sans contact à chaque machine. Pas besoin de monnaie exacte.',
-  },
-  {
-    q: 'Combien de temps prévoir ?',
-    a: 'Comptez 30 à 45 minutes pour le lavage selon la taille, plus 20 à 30 minutes de séchage. Une heure complète suffit dans la grande majorité des cas.',
-  },
+  { q: 'Faut-il apporter sa lessive ?', a: "La lessive est disponible sur place. Vous pouvez aussi apporter la vôtre si vous préférez un produit spécifique." },
+  { q: 'Puis-je récupérer un colis à la laverie ?', a: "Oui. La Laverie du Floréal est un point relais Colissimo et Pickup. Pratique : une seule sortie pour votre linge et vos colis." },
+  { q: 'La couette est-elle acceptée ?', a: 'Oui. Les grands séchoirs accueillent les couettes deux personnes confortablement. Pour les couettes très épaisses, venez plutôt en début de journée.' },
+  { q: 'Combien de temps prévoir ?', a: 'Comptez 30 à 45 minutes pour le lavage, puis 20 à 30 minutes de séchage. Une heure complète suffit dans la grande majorité des cas.' },
+  { q: 'Ouverte les jours fériés ?', a: "Oui, presque tous. La laverie ferme seulement 3 jours dans l'année : le 25 décembre, le 1er janvier et le 1er mai." },
 ]
 ---
 <Layout
   title="Laverie du Floréal · Agen"
-  description="Laverie automatique rue Bajon à Agen. Machines grande capacité, grands séchoirs, point relais colis, ouverte 7 jours sur 7."
+  description="Laverie automatique 16 rue Bajon à Agen. Ouverte 6h–22h, 362 jours/an. Grands séchoirs, point relais colis, désinfection 2× par jour."
 >
   <Nav />
 
   <main id="top" class="pt-14">
 
-    <!-- Hero -->
-    <section class="border-b border-line relative overflow-hidden">
+    <!-- ══════════════════════════════════════════════════════════════
+         HERO — fond ivoire, grande plante grimpante en respiration
+    ═══════════════════════════════════════════════════════════════ -->
+    <section class="relative overflow-hidden border-b border-line" style="background: transparent;">
 
-      <!-- Brin fleuri décoratif, coin supérieur droit, très discret -->
-      <svg
-        aria-hidden="true"
-        class="absolute top-0 right-0 w-[420px] h-[420px] pointer-events-none select-none"
-        style="opacity: 0.08; color: var(--color-accent);"
-        viewBox="0 0 420 420"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <!-- Tige principale qui descend en s'incurvant -->
-        <path d="M330 12 C300 90 312 160 268 226 C236 274 214 300 196 352" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-        <!-- Feuilles le long de la tige -->
-        <path d="M316 70 C296 60 280 66 270 84 C290 92 308 88 316 70 Z" fill="currentColor" opacity="0.55"/>
-        <path d="M308 120 C330 116 346 124 352 144 C330 150 314 142 308 120 Z" fill="currentColor" opacity="0.55"/>
-        <path d="M286 178 C266 170 250 176 242 194 C262 202 280 196 286 178 Z" fill="currentColor" opacity="0.55"/>
-        <path d="M252 250 C274 248 290 258 294 278 C272 282 256 272 252 250 Z" fill="currentColor" opacity="0.5"/>
-        <path d="M224 312 C204 306 188 314 182 332 C202 338 218 330 224 312 Z" fill="currentColor" opacity="0.5"/>
-        <!-- Fleur en haut (5 pétales autour d'un coeur) -->
-        <g>
-          <ellipse cx="330" cy="16" rx="7" ry="12" fill="currentColor"/>
-          <ellipse cx="345" cy="26" rx="7" ry="12" transform="rotate(60 345 26)" fill="currentColor"/>
-          <ellipse cx="340" cy="44" rx="7" ry="12" transform="rotate(120 340 44)" fill="currentColor"/>
-          <ellipse cx="320" cy="44" rx="7" ry="12" transform="rotate(-120 320 44)" fill="currentColor"/>
-          <ellipse cx="315" cy="26" rx="7" ry="12" transform="rotate(-60 315 26)" fill="currentColor"/>
-          <circle cx="330" cy="30" r="4" fill="var(--color-bg)"/>
-        </g>
-        <!-- Petite fleur secondaire plus bas -->
-        <g opacity="0.7">
-          <ellipse cx="196" cy="350" rx="5" ry="9" fill="currentColor"/>
-          <ellipse cx="207" cy="358" rx="5" ry="9" transform="rotate(60 207 358)" fill="currentColor"/>
-          <ellipse cx="203" cy="370" rx="5" ry="9" transform="rotate(120 203 370)" fill="currentColor"/>
-          <ellipse cx="189" cy="370" rx="5" ry="9" transform="rotate(-120 189 370)" fill="currentColor"/>
-          <ellipse cx="185" cy="358" rx="5" ry="9" transform="rotate(-60 185 358)" fill="currentColor"/>
-          <circle cx="196" cy="362" r="3" fill="var(--color-bg)"/>
-        </g>
-      </svg>
+      <!-- Plante haute droite, respire doucement -->
+      <div class="absolute top-0 right-0 w-[480px] h-[640px] pointer-events-none select-none" aria-hidden="true">
+        <svg class="w-full h-full botanical-blend botanical-breathe" viewBox="0 0 480 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Tige principale -->
+          <path d="M380 640 C370 520 390 430 355 330 C320 230 340 140 310 30" stroke="#3d5a2a" stroke-width="2" stroke-linecap="round" opacity="0.35"/>
+          <!-- Feuilles pinnées -->
+          <ellipse cx="328" cy="350" rx="28" ry="52" transform="rotate(-38 328 350)" fill="#3d5a2a" opacity="0.22"/>
+          <ellipse cx="385" cy="300" rx="24" ry="45" transform="rotate(42 385 300)" fill="#3d5a2a" opacity="0.20"/>
+          <ellipse cx="320" cy="245" rx="26" ry="48" transform="rotate(-44 320 245)" fill="#3d5a2a" opacity="0.20"/>
+          <ellipse cx="370" cy="195" rx="22" ry="40" transform="rotate(38 370 195)" fill="#3d5a2a" opacity="0.18"/>
+          <ellipse cx="318" cy="148" rx="20" ry="36" transform="rotate(-42 318 148)" fill="#3d5a2a" opacity="0.17"/>
+          <ellipse cx="355" cy="105" rx="18" ry="32" transform="rotate(35 355 105)" fill="#3d5a2a" opacity="0.16"/>
+          <ellipse cx="310" cy="68"  rx="16" ry="28" transform="rotate(-38 310 68)"  fill="#3d5a2a" opacity="0.15"/>
+          <!-- Nervures centrales -->
+          <path d="M328 350 Q310 326 320 303" stroke="#3d5a2a" stroke-width="0.7" opacity="0.18"/>
+          <path d="M320 245 Q302 222 310 199" stroke="#3d5a2a" stroke-width="0.7" opacity="0.16"/>
+          <!-- Fleur en cime -->
+          <g opacity="0.22">
+            <ellipse cx="310" cy="18" rx="9" ry="18" fill="#b5673a"/>
+            <ellipse cx="310" cy="18" rx="9" ry="18" transform="rotate(60 310 30)"  fill="#b5673a"/>
+            <ellipse cx="310" cy="18" rx="9" ry="18" transform="rotate(120 310 30)" fill="#b5673a"/>
+            <ellipse cx="310" cy="18" rx="9" ry="18" transform="rotate(180 310 30)" fill="#b5673a"/>
+            <ellipse cx="310" cy="18" rx="9" ry="18" transform="rotate(240 310 30)" fill="#b5673a"/>
+            <ellipse cx="310" cy="18" rx="9" ry="18" transform="rotate(300 310 30)" fill="#b5673a"/>
+            <circle cx="310" cy="30" r="7" fill="#b5673a"/>
+          </g>
+          <!-- Petits pétales tombants -->
+          <ellipse cx="420" cy="180" rx="5" ry="10" transform="rotate(30 420 180)" fill="#b5673a" opacity="0.12"/>
+          <ellipse cx="440" cy="300" rx="4" ry="8"  transform="rotate(-20 440 300)" fill="#b5673a" opacity="0.10"/>
+          <ellipse cx="460" cy="420" rx="4" ry="8"  transform="rotate(15 460 420)"  fill="#3d5a2a" opacity="0.10"/>
+        </svg>
+      </div>
 
-      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 pt-20 sm:pt-28 pb-12 sm:pb-16 text-center">
+      <!-- Petite plante basse gauche, oscillation douce -->
+      <div class="absolute bottom-0 left-0 w-[220px] h-[320px] pointer-events-none select-none" aria-hidden="true">
+        <svg class="w-full h-full botanical-blend botanical-sway" viewBox="0 0 220 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M40 320 C44 260 30 210 50 160 C70 110 55 70 45 20" stroke="#3d5a2a" stroke-width="1.5" stroke-linecap="round" opacity="0.25"/>
+          <ellipse cx="28" cy="220" rx="18" ry="36" transform="rotate(-35 28 220)" fill="#3d5a2a" opacity="0.18"/>
+          <ellipse cx="62" cy="185" rx="16" ry="30" transform="rotate(40 62 185)"  fill="#3d5a2a" opacity="0.16"/>
+          <ellipse cx="30" cy="148" rx="14" ry="26" transform="rotate(-38 30 148)" fill="#3d5a2a" opacity="0.15"/>
+          <ellipse cx="58" cy="118" rx="13" ry="22" transform="rotate(36 58 118)"  fill="#3d5a2a" opacity="0.14"/>
+        </svg>
+      </div>
 
+      <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8 pt-20 sm:pt-28 pb-12 sm:pb-16 text-center">
         <div class="hero-item flex items-center justify-center gap-3 mb-7" style="--hi: 0">
           <span class="dot"></span>
-          <span class="eyebrow">Agen · Rue Bajon</span>
+          <span class="eyebrow">Agen · 16 rue Bajon</span>
         </div>
-
         <h1 class="font-medium tracking-tight leading-[1.0] max-w-3xl mx-auto" style="font-size: var(--text-display-xl);">
-          <span class="hero-item block" style="--hi: 1">Du linge frais,</span>
-          <em class="hero-item font-display italic font-light block" style="--hi: 2">et l'esprit tranquille.</em>
+          <span class="hero-item block" style="--hi: 1">Du linge soigné,</span>
+          <em class="hero-item font-display italic font-light block" style="--hi: 2">l'esprit en fleur.</em>
         </h1>
-
         <div class="hero-item mt-10 flex flex-wrap items-center justify-center gap-3" style="--hi: 3">
-          <a href="#tarifs" class="cta">
-            Voir les tarifs
-            <span aria-hidden="true">→</span>
-          </a>
+          <a href="#tarifs" class="cta">Voir les tarifs <span aria-hidden="true">→</span></a>
           <a href="#visite" class="cta-ghost">Horaires & accès</a>
         </div>
-
         <div class="hero-item mt-8 flex items-center justify-center gap-3 text-sm" style="--hi: 4">
-          <span id="badge-open" class="inline-flex items-center gap-2 px-3 py-1.5 bg-accent-soft text-accent rounded-sm font-medium">
-            <span class="w-1.5 h-1.5 rounded-full bg-accent inline-block animate-pulse"></span>
+          <span id="badge-open" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm font-medium" style="background: var(--color-accent-soft); color: var(--color-accent);">
+            <span class="w-1.5 h-1.5 rounded-full inline-block animate-pulse" style="background: var(--color-accent);"></span>
             Ouvert maintenant
           </span>
-          <span id="badge-closed" style="display:none" class="inline-flex items-center gap-2 px-3 py-1.5 bg-bg-elev text-muted rounded-sm font-medium">
-            <span class="w-1.5 h-1.5 rounded-full bg-muted inline-block"></span>
+          <span id="badge-closed" style="display:none" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-sm font-medium" style="background: var(--color-bg-elev); color: var(--color-muted);">
+            <span class="w-1.5 h-1.5 rounded-full inline-block" style="background: var(--color-muted);"></span>
             Fermé
           </span>
-          <span id="badge-label" class="text-muted">jusqu'à 22h</span>
+          <span id="badge-label" style="color: var(--color-muted);">jusqu'à 22h</span>
         </div>
         <script>
           {
-            const min = new Date().getHours() * 60 + new Date().getMinutes();
-            const isOpen = min >= 420 && min < 1320; // 7h00–22h00 (à confirmer)
+            const now = new Date();
+            const min = now.getHours() * 60 + now.getMinutes();
+            const m = now.getMonth() + 1, d = now.getDate();
+            const isClosed3 = (m===12&&d===25)||(m===1&&d===1)||(m===5&&d===1);
+            const isOpen = !isClosed3 && min >= 360 && min < 1320;
             if (!isOpen) {
               document.getElementById('badge-open').style.display = 'none';
               document.getElementById('badge-closed').style.display = '';
               document.getElementById('badge-label').textContent =
-                min < 420 ? 'ouvre à 7h' : 'ouvre demain à 7h';
+                isClosed3 ? "fermée aujourd'hui" : min < 360 ? 'ouvre à 6h' : 'ouvre demain à 6h';
             }
           }
         </script>
       </div>
 
-      <!-- Image compacte pleine largeur sous le texte -->
-      <figure class="hero-item w-full aspect-[2/1] sm:aspect-[3/1] overflow-hidden bg-bg-elev" style="--hi: 5">
-        <img
-          src={hero}
-          alt="Intérieur lumineux de la Laverie du Floréal, Agen"
-          class="w-full h-full object-cover object-center"
-          loading="eager"
-          fetchpriority="high"
-        />
+      <figure class="hero-item w-full aspect-[2/1] sm:aspect-[3/1] overflow-hidden" style="--hi: 5">
+        <img src={hero} alt="Intérieur lumineux de la Laverie du Floréal, Agen" class="w-full h-full object-cover object-center" loading="eager" fetchpriority="high"/>
       </figure>
     </section>
 
-    <!-- Social proof strip -->
-    <div class="border-b border-line bg-bg-elev">
-      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm text-muted">
+    <!-- ══════════════════════════════════════════════════════════════
+         SOCIAL PROOF — fond légèrement plus chaud
+    ═══════════════════════════════════════════════════════════════ -->
+    <div class="border-b border-line" style="background: rgba(237,231,214,0.55);">
+      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-5 flex flex-wrap items-center justify-center gap-x-8 gap-y-2 text-sm" style="color: var(--color-muted);">
         <span class="flex items-center gap-2">
-          <span class="text-accent font-medium">★★★★★</span>
-          <span>Recommandée par ses habitués</span>
+          <span class="font-medium" style="color: var(--color-accent);">★★★★☆</span>
+          <span>4,3 · Recommandée par ses habitués</span>
         </span>
-        <span class="hidden sm:block w-px h-4 bg-line-strong"></span>
-        <span>Laverie & point relais colis, en plein Agen</span>
+        <span class="hidden sm:block w-px h-4" style="background: var(--color-line-strong);"></span>
+        <span>Ouverte 362 jours par an · de 6h à 22h</span>
       </div>
     </div>
 
-    <!-- Chiffres clés -->
-    <div class="border-b border-line reveal-on-scroll">
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-px" style="background: rgba(181, 104, 59, 0.15);">
+    <!-- ══════════════════════════════════════════════════════════════
+         CHIFFRES CLÉS — fond warm, fougère dérive en arrière-plan
+    ═══════════════════════════════════════════════════════════════ -->
+    <div class="border-b border-line relative overflow-hidden reveal-on-scroll" style="background: rgba(232,223,202,0.50);">
+
+      <!-- Grande fougère droite, dérive lente -->
+      <div class="absolute -right-16 top-0 bottom-0 w-[380px] pointer-events-none select-none" aria-hidden="true">
+        <svg class="w-full h-full botanical-blend botanical-drift" viewBox="0 0 380 280" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Fougère — pinnules de chaque côté d'une rachis -->
+          <path d="M190 280 C185 220 192 160 185 90 C178 20 182 0 185 0" stroke="#3d5a2a" stroke-width="2" stroke-linecap="round" opacity="0.28"/>
+          <!-- Pinnules gauches -->
+          <path d="M185 240 C165 228 148 222 135 215" stroke="#3d5a2a" stroke-width="1.2" stroke-linecap="round" opacity="0.22"/>
+          <path d="M185 210 C162 196 142 188 126 179" stroke="#3d5a2a" stroke-width="1.2" stroke-linecap="round" opacity="0.22"/>
+          <path d="M185 178 C160 162 138 152 120 142" stroke="#3d5a2a" stroke-width="1.2" stroke-linecap="round" opacity="0.20"/>
+          <path d="M185 146 C162 128 140 117 124 106" stroke="#3d5a2a" stroke-width="1.2" stroke-linecap="round" opacity="0.20"/>
+          <path d="M185 116 C164 96  144 84  130 72"  stroke="#3d5a2a" stroke-width="1.1" stroke-linecap="round" opacity="0.18"/>
+          <path d="M185 88  C166 68  150 56  138 44"  stroke="#3d5a2a" stroke-width="1.1" stroke-linecap="round" opacity="0.17"/>
+          <path d="M185 62  C170 44  158 32  150 20"  stroke="#3d5a2a" stroke-width="1"   stroke-linecap="round" opacity="0.16"/>
+          <!-- Pinnules droites -->
+          <path d="M185 240 C205 228 222 222 235 215" stroke="#3d5a2a" stroke-width="1.2" stroke-linecap="round" opacity="0.22"/>
+          <path d="M185 210 C208 196 228 188 244 179" stroke="#3d5a2a" stroke-width="1.2" stroke-linecap="round" opacity="0.22"/>
+          <path d="M185 178 C210 162 232 152 250 142" stroke="#3d5a2a" stroke-width="1.2" stroke-linecap="round" opacity="0.20"/>
+          <path d="M185 146 C208 128 230 117 246 106" stroke="#3d5a2a" stroke-width="1.2" stroke-linecap="round" opacity="0.20"/>
+          <path d="M185 116 C206 96  226 84  240 72"  stroke="#3d5a2a" stroke-width="1.1" stroke-linecap="round" opacity="0.18"/>
+          <path d="M185 88  C204 68  220 56  232 44"  stroke="#3d5a2a" stroke-width="1.1" stroke-linecap="round" opacity="0.17"/>
+          <path d="M185 62  C200 44  212 32  220 20"  stroke="#3d5a2a" stroke-width="1"   stroke-linecap="round" opacity="0.16"/>
+          <!-- Petites feuillettes terminales -->
+          <ellipse cx="135" cy="213" rx="6"  ry="12" transform="rotate(-42 135 213)" fill="#3d5a2a" opacity="0.15"/>
+          <ellipse cx="120" cy="140" rx="7"  ry="14" transform="rotate(-45 120 140)" fill="#3d5a2a" opacity="0.13"/>
+          <ellipse cx="235" cy="213" rx="6"  ry="12" transform="rotate(42 235 213)"  fill="#3d5a2a" opacity="0.15"/>
+          <ellipse cx="250" cy="140" rx="7"  ry="14" transform="rotate(45 250 140)"  fill="#3d5a2a" opacity="0.13"/>
+        </svg>
+      </div>
+
+      <div class="relative grid grid-cols-2 sm:grid-cols-4">
         {chiffres.map((c) => (
-          <div class="px-6 sm:px-12 py-14 sm:py-16 text-center" style="background: #f1ecde;">
-            <p class="font-display italic font-light leading-none" style="font-size: clamp(2.75rem, 5vw, 4.25rem); color: var(--color-accent);">{c.val}</p>
+          <div class="px-6 sm:px-12 py-14 sm:py-16 text-center border-r border-b last:border-r-0 border-line">
+            <p class="font-display italic font-light leading-none" style={`font-size: clamp(2.75rem, 5vw, 4.25rem); color: var(--color-accent);`}>{c.val}</p>
             <p class="mt-4 text-xs uppercase" style="color: var(--color-muted); letter-spacing: 0.14em;">{c.label}</p>
           </div>
         ))}
       </div>
     </div>
 
-    <!-- Tarifs -->
-    <section id="tarifs" class="border-b border-line">
-      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-20 sm:py-28 reveal-on-scroll">
+    <!-- ══════════════════════════════════════════════════════════════
+         TARIFS — fond ivoire de base, bouquet bas gauche
+    ═══════════════════════════════════════════════════════════════ -->
+    <section id="tarifs" class="border-b border-line relative overflow-hidden" style="background: transparent;">
+
+      <!-- Bouquet de fleurs bas gauche, oscillation douce -->
+      <div class="absolute bottom-0 left-0 w-[320px] h-[420px] pointer-events-none select-none" aria-hidden="true">
+        <svg class="w-full h-full botanical-blend botanical-sway" viewBox="0 0 320 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- 3 tiges -->
+          <path d="M100 420 C96 340 88 270 100 190 C112 110 100 60 90 10"  stroke="#3d5a2a" stroke-width="1.5" stroke-linecap="round" opacity="0.28"/>
+          <path d="M130 420 C128 350 118 285 132 210 C146 135 136 85 126 30" stroke="#3d5a2a" stroke-width="1.5" stroke-linecap="round" opacity="0.24"/>
+          <path d="M160 420 C162 355 155 295 168 225 C181 155 172 100 162 50" stroke="#3d5a2a" stroke-width="1.5" stroke-linecap="round" opacity="0.22"/>
+          <!-- Feuilles tige 1 -->
+          <ellipse cx="78"  cy="310" rx="16" ry="30" transform="rotate(-40 78 310)"  fill="#3d5a2a" opacity="0.18"/>
+          <ellipse cx="112" cy="260" rx="14" ry="26" transform="rotate(36 112 260)"  fill="#3d5a2a" opacity="0.16"/>
+          <ellipse cx="80"  cy="200" rx="13" ry="24" transform="rotate(-38 80 200)"  fill="#3d5a2a" opacity="0.15"/>
+          <!-- Feuilles tige 2 -->
+          <ellipse cx="115" cy="330" rx="14" ry="26" transform="rotate(-36 115 330)" fill="#3d5a2a" opacity="0.16"/>
+          <ellipse cx="146" cy="280" rx="13" ry="24" transform="rotate(38 146 280)"  fill="#3d5a2a" opacity="0.15"/>
+          <!-- Fleur tige 1 -->
+          <g opacity="0.22">
+            <ellipse cx="90" cy="6"  rx="7" ry="14" fill="#b5673a"/>
+            <ellipse cx="90" cy="6"  rx="7" ry="14" transform="rotate(60 90 16)"  fill="#b5673a"/>
+            <ellipse cx="90" cy="6"  rx="7" ry="14" transform="rotate(120 90 16)" fill="#b5673a"/>
+            <ellipse cx="90" cy="6"  rx="7" ry="14" transform="rotate(180 90 16)" fill="#b5673a"/>
+            <ellipse cx="90" cy="6"  rx="7" ry="14" transform="rotate(240 90 16)" fill="#b5673a"/>
+            <ellipse cx="90" cy="6"  rx="7" ry="14" transform="rotate(300 90 16)" fill="#b5673a"/>
+            <circle  cx="90" cy="16" r="5" fill="#b5673a"/>
+          </g>
+          <!-- Bouton floral tige 2 -->
+          <ellipse cx="126" cy="26" rx="6" ry="14" fill="#b5673a" opacity="0.18"/>
+          <ellipse cx="126" cy="26" rx="6" ry="14" transform="rotate(60 126 36)"  fill="#b5673a" opacity="0.18"/>
+          <ellipse cx="126" cy="26" rx="6" ry="14" transform="rotate(120 126 36)" fill="#b5673a" opacity="0.18"/>
+          <circle  cx="126" cy="36" r="4" fill="#b5673a" opacity="0.2"/>
+          <!-- Bouton tige 3 (bourgeon) -->
+          <ellipse cx="162" cy="44" rx="5" ry="10" fill="#3d5a2a" opacity="0.20"/>
+        </svg>
+      </div>
+
+      <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8 py-20 sm:py-28 reveal-on-scroll">
         <div class="flex items-baseline justify-between flex-wrap gap-4 mb-12">
           <div>
             <p class="eyebrow mb-3">Tarifs</p>
             <h2 class="font-medium tracking-tight" style="font-size: var(--text-h2);">
-              Clair, <em class="font-display italic font-light text-muted-strong">à la machine.</em>
+              Clair, <em class="font-display italic font-light" style="color: var(--color-muted-strong);">à la machine.</em>
             </h2>
           </div>
-          <p class="text-muted text-sm">Sans contact, espèces ou CB</p>
+          <p class="text-sm" style="color: var(--color-muted);">Dès 3,20 € · CB, sans contact, espèces</p>
         </div>
 
-        <div class="grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-line border-y border-line">
+        <div class="grid sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x border-y" style="border-color: var(--color-line); divide-color: var(--color-line);">
           {tarifs.map((t) => (
             <div class="py-10 sm:py-12 px-2 sm:px-8 text-center">
-              <p class="font-display italic font-light text-3xl sm:text-4xl text-muted-strong">{t.capacite}</p>
+              <p class="font-display italic font-light text-3xl sm:text-4xl" style="color: var(--color-muted-strong);">{t.capacite}</p>
               <p class="mt-6 sm:mt-8 font-medium tracking-tight leading-none" style="font-size: clamp(3rem, 6vw, 4.5rem);">{t.prix}</p>
-              <p class="mt-6 text-sm text-muted">
-                <span class="text-fg">{t.duree}</span><span class="mx-2">·</span>{t.usage}
+              <p class="mt-6 text-sm" style="color: var(--color-muted);">
+                <span style="color: var(--color-fg);">{t.duree}</span><span class="mx-2">·</span>{t.usage}
               </p>
             </div>
           ))}
         </div>
-
         <div class="mt-10 flex flex-wrap items-baseline gap-x-8 gap-y-3 text-sm">
-          <span class="text-muted">+</span>
-          <span><span class="font-medium">Séchage</span> <span class="text-muted">1 € / 10 min</span></span>
+          <span style="color: var(--color-muted);">+</span>
+          <span><span class="font-medium">Séchage</span> <span style="color: var(--color-muted);">1 € / 10 min</span></span>
         </div>
       </div>
     </section>
 
-    <!-- Équipements -->
-    <section id="equipements" class="border-b border-line bg-bg-elev">
-      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-20 sm:py-28 grid md:grid-cols-12 gap-10 items-center reveal-on-scroll">
+    <!-- ══════════════════════════════════════════════════════════════
+         ÉQUIPEMENTS — fond légèrement élevé, feuilles droite
+    ═══════════════════════════════════════════════════════════════ -->
+    <section id="equipements" class="border-b border-line relative overflow-hidden" style="background: rgba(237,231,214,0.55);">
 
-        <div class="md:col-span-6 md:pr-6">
-          <p class="eyebrow mb-3">Sur place</p>
-          <h2 class="font-medium tracking-tight mb-10" style="font-size: var(--text-h2);">
-            Pensé pour <em class="font-display italic font-light text-muted-strong">vous faciliter l'attente.</em>
-          </h2>
+      <!-- Rameau de feuilles haut droit, respiration -->
+      <div class="absolute top-0 right-0 w-[300px] h-[360px] pointer-events-none select-none" aria-hidden="true">
+        <svg class="w-full h-full botanical-blend botanical-breathe" viewBox="0 0 300 360" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M260 0 C255 60 240 110 220 165 C200 220 190 270 180 360" stroke="#3d5a2a" stroke-width="1.5" stroke-linecap="round" opacity="0.28"/>
+          <ellipse cx="238" cy="80"  rx="20" ry="40" transform="rotate(-30 238 80)"  fill="#3d5a2a" opacity="0.20"/>
+          <ellipse cx="280" cy="60"  rx="18" ry="34" transform="rotate(35 280 60)"   fill="#3d5a2a" opacity="0.18"/>
+          <ellipse cx="225" cy="140" rx="19" ry="36" transform="rotate(-35 225 140)" fill="#3d5a2a" opacity="0.18"/>
+          <ellipse cx="268" cy="120" rx="17" ry="32" transform="rotate(32 268 120)"  fill="#3d5a2a" opacity="0.17"/>
+          <ellipse cx="214" cy="200" rx="17" ry="32" transform="rotate(-38 214 200)" fill="#3d5a2a" opacity="0.16"/>
+          <ellipse cx="255" cy="185" rx="15" ry="28" transform="rotate(30 255 185)"  fill="#3d5a2a" opacity="0.15"/>
+          <!-- Petites baies terracotta -->
+          <circle cx="290" cy="45"  r="5" fill="#b5673a" opacity="0.18"/>
+          <circle cx="275" cy="30"  r="4" fill="#b5673a" opacity="0.15"/>
+          <circle cx="298" cy="28"  r="3" fill="#b5673a" opacity="0.13"/>
+        </svg>
+      </div>
 
-          <ul class="divide-y divide-line border-y border-line">
-            {atouts.map((a) => (
-              <li class="py-4 flex items-center gap-4">
-                <span class="dot"></span>
-                <span class="text-base sm:text-lg">{a}</span>
-              </li>
-            ))}
-          </ul>
+      <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8 py-20 sm:py-28 reveal-on-scroll">
+        <p class="eyebrow mb-3">Sur place</p>
+        <h2 class="font-medium tracking-tight mb-14" style="font-size: var(--text-h2);">
+          Pensé pour <em class="font-display italic font-light" style="color: var(--color-muted-strong);">simplifier votre quotidien.</em>
+        </h2>
+
+        <div class="grid sm:grid-cols-2 gap-8">
+          {atouts.map((a, i) => (
+            <div class="flex items-start gap-5 py-8 border-b" style="border-color: var(--color-line);">
+              <!-- Petite feuille SVG inline -->
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none" class="shrink-0 mt-0.5" aria-hidden="true">
+                <ellipse cx="11" cy="11" rx="5" ry="10" transform="rotate(-25 11 11)" fill="#3d5a2a" opacity="0.45"/>
+                <path d="M11 20 C11 14 9.5 10 11 4" stroke="#3d5a2a" stroke-width="0.8" stroke-linecap="round" opacity="0.35"/>
+              </svg>
+              <div>
+                <p class="font-medium text-lg mb-1">{a.titre}</p>
+                <p class="text-sm" style="color: var(--color-muted);">{a.detail}</p>
+              </div>
+            </div>
+          ))}
         </div>
-
-        <figure class="md:col-span-6 aspect-[5/4] overflow-hidden bg-bg-elev">
-          <img src={imgMachines} alt="Machines à laver à hublot, Laverie du Floréal" class="w-full h-full object-cover" loading="lazy" />
-        </figure>
       </div>
     </section>
 
-    <!-- Bandeau point relais colis (atout différenciant) -->
-    <section class="border-b border-line" style="background: var(--color-accent-soft);">
-      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-14 sm:py-16 flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-12 reveal-on-scroll">
+    <!-- ══════════════════════════════════════════════════════════════
+         POINT RELAIS — fond warm, fleur terracotta centrale
+    ═══════════════════════════════════════════════════════════════ -->
+    <section class="border-b border-line relative overflow-hidden" style="background: rgba(232,223,202,0.50);">
+
+      <!-- Grande fleur centrée en fond, dérive très lente -->
+      <div class="absolute inset-0 flex items-center justify-end pr-8 pointer-events-none select-none" aria-hidden="true">
+        <svg class="w-[380px] h-[380px] botanical-blend botanical-drift" viewBox="0 0 380 380" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g opacity="0.13">
+            <ellipse cx="190" cy="60"  rx="18" ry="44" fill="#b5673a"/>
+            <ellipse cx="190" cy="60"  rx="18" ry="44" transform="rotate(30 190 190)"  fill="#b5673a"/>
+            <ellipse cx="190" cy="60"  rx="18" ry="44" transform="rotate(60 190 190)"  fill="#b5673a"/>
+            <ellipse cx="190" cy="60"  rx="18" ry="44" transform="rotate(90 190 190)"  fill="#b5673a"/>
+            <ellipse cx="190" cy="60"  rx="18" ry="44" transform="rotate(120 190 190)" fill="#b5673a"/>
+            <ellipse cx="190" cy="60"  rx="18" ry="44" transform="rotate(150 190 190)" fill="#b5673a"/>
+            <ellipse cx="190" cy="60"  rx="18" ry="44" transform="rotate(180 190 190)" fill="#b5673a"/>
+            <ellipse cx="190" cy="60"  rx="18" ry="44" transform="rotate(210 190 190)" fill="#b5673a"/>
+            <ellipse cx="190" cy="60"  rx="18" ry="44" transform="rotate(240 190 190)" fill="#b5673a"/>
+            <ellipse cx="190" cy="60"  rx="18" ry="44" transform="rotate(270 190 190)" fill="#b5673a"/>
+            <ellipse cx="190" cy="60"  rx="18" ry="44" transform="rotate(300 190 190)" fill="#b5673a"/>
+            <ellipse cx="190" cy="60"  rx="18" ry="44" transform="rotate(330 190 190)" fill="#b5673a"/>
+            <circle  cx="190" cy="190" r="28"           fill="#3d5a2a"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8 py-16 sm:py-20 flex flex-col sm:flex-row sm:items-center gap-8 sm:gap-16 reveal-on-scroll">
         <div class="shrink-0">
           <p class="eyebrow mb-2" style="color: var(--color-accent);">Aussi point relais</p>
-          <p class="font-display italic font-light leading-none" style="font-size: clamp(2.25rem, 4vw, 3.25rem); color: var(--color-accent);">Colissimo · Pickup</p>
+          <p class="font-display italic font-light" style="font-size: clamp(2rem, 4vw, 3rem); color: var(--color-accent);">Colissimo · Pickup</p>
         </div>
-        <p class="text-lg sm:text-xl text-muted-strong leading-snug max-w-xl">
+        <p class="text-lg sm:text-xl leading-snug" style="color: var(--color-muted-strong); max-width: 38rem;">
           Déposez ou récupérez vos colis pendant que votre linge tourne. Deux courses en une, sans détour.
         </p>
       </div>
     </section>
 
-    <!-- Photo break éditorial -->
+    <!-- ══════════════════════════════════════════════════════════════
+         PHOTO BREAK — plein écran, calque vert sombre
+    ═══════════════════════════════════════════════════════════════ -->
     <div class="relative aspect-[21/9] overflow-hidden border-b border-line">
-      <img
-        src={imgInterieur}
-        alt="Intérieur lumineux de la Laverie du Floréal"
-        class="w-full h-full object-cover"
-        loading="lazy"
-      />
-      <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(32,48,31,0.58) 0%, rgba(32,48,31,0.15) 100%);"></div>
+      <img src={imgMachines} alt="Machines à laver Laverie du Floréal" class="w-full h-full object-cover" loading="lazy"/>
+      <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(30,46,20,0.62) 0%, rgba(30,46,20,0.12) 100%);"></div>
       <div class="absolute inset-0 flex items-center px-8 sm:px-16 lg:px-24">
-        <p class="font-display italic font-light max-w-xl leading-snug" style="font-size: clamp(1.75rem, 3.5vw, 3rem); color: var(--color-bg);">
-          Un linge soigné,<br/>au cœur d'Agen,<br/>7 jours sur 7.
+        <p class="font-display italic font-light max-w-xl leading-snug" style="font-size: clamp(1.75rem, 3.5vw, 3rem); color: #f7f3ea;">
+          Un espace soigné,<br/>ouvert 362 jours par an.
         </p>
       </div>
     </div>
 
-    <!-- Visite, horaires + adresse -->
-    <section id="visite" class="border-b border-line">
-      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-20 sm:py-28 grid lg:grid-cols-12 gap-12 reveal-on-scroll">
+    <!-- ══════════════════════════════════════════════════════════════
+         HORAIRES & ADRESSE — fond base, feuilles gauche
+    ═══════════════════════════════════════════════════════════════ -->
+    <section id="visite" class="border-b border-line relative overflow-hidden" style="background: transparent;">
+
+      <!-- Longue tige avec feuilles, bord gauche, dérive -->
+      <div class="absolute left-0 top-0 bottom-0 w-[180px] pointer-events-none select-none" aria-hidden="true">
+        <svg class="w-full h-full botanical-blend botanical-drift" viewBox="0 0 180 600" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M30 600 C28 500 22 400 32 300 C42 200 28 120 25 0" stroke="#3d5a2a" stroke-width="1.5" stroke-linecap="round" opacity="0.22"/>
+          <ellipse cx="12"  cy="480" rx="14" ry="28" transform="rotate(-35 12 480)"  fill="#3d5a2a" opacity="0.16"/>
+          <ellipse cx="50"  cy="430" rx="13" ry="25" transform="rotate(38 50 430)"   fill="#3d5a2a" opacity="0.15"/>
+          <ellipse cx="14"  cy="360" rx="13" ry="24" transform="rotate(-38 14 360)"  fill="#3d5a2a" opacity="0.15"/>
+          <ellipse cx="48"  cy="310" rx="12" ry="22" transform="rotate(36 48 310)"   fill="#3d5a2a" opacity="0.14"/>
+          <ellipse cx="14"  cy="248" rx="12" ry="22" transform="rotate(-36 14 248)"  fill="#3d5a2a" opacity="0.14"/>
+          <ellipse cx="46"  cy="198" rx="11" ry="20" transform="rotate(34 46 198)"   fill="#3d5a2a" opacity="0.13"/>
+          <ellipse cx="15"  cy="138" rx="11" ry="20" transform="rotate(-34 15 138)"  fill="#3d5a2a" opacity="0.13"/>
+          <ellipse cx="44"  cy="90"  rx="10" ry="18" transform="rotate(32 44 90)"    fill="#3d5a2a" opacity="0.12"/>
+          <ellipse cx="16"  cy="42"  rx="10" ry="18" transform="rotate(-32 16 42)"   fill="#3d5a2a" opacity="0.12"/>
+        </svg>
+      </div>
+
+      <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8 py-20 sm:py-28 grid lg:grid-cols-12 gap-12 reveal-on-scroll">
         <div class="lg:col-span-5">
           <p class="eyebrow mb-3">Nous trouver</p>
           <h2 class="font-medium tracking-tight mb-8" style="font-size: var(--text-h2);">
-            <em class="font-display italic font-light">Rue Bajon,</em><br/>
-            en plein Agen.
+            <em class="font-display italic font-light">Rue Bajon,</em><br/>en plein Agen.
           </h2>
-
-          <p class="text-xl text-fg leading-snug">
-            16 rue Bajon<br/>
-            47000 Agen
-          </p>
-
-          <a
-            href={mapsUrl}
-            target="_blank"
-            rel="noopener"
-            class="mt-8 inline-flex items-center gap-2 text-sm font-medium text-accent hover:underline"
-          >
-            Ouvrir dans Google Maps
-            <span aria-hidden="true">→</span>
+          <p class="text-xl leading-snug">16 rue Bajon<br/>47000 Agen</p>
+          <a href={mapsUrl} target="_blank" rel="noopener" class="mt-8 inline-flex items-center gap-2 text-sm font-medium hover:underline" style="color: var(--color-accent);">
+            Ouvrir dans Google Maps <span aria-hidden="true">→</span>
           </a>
         </div>
 
         <div class="lg:col-span-6 lg:col-start-7">
           <p class="eyebrow mb-6">Horaires</p>
-          <ul class="divide-y divide-line border-y border-line">
+          <ul class="divide-y border-y" style="border-color: var(--color-line);">
             {horaires.map((h) => (
               <li class="flex items-baseline justify-between py-5">
                 <span class="text-lg">{h.jour}</span>
-                <span class="font-display text-2xl sm:text-3xl tracking-tight">{h.heures}</span>
+                <span class="font-display text-xl sm:text-2xl tracking-tight" style="color: var(--color-muted-strong);">{h.heures}</span>
               </li>
             ))}
           </ul>
-          <p class="mt-5 text-sm text-muted">Dernier lavage 1h avant la fermeture.</p>
+          <p class="mt-5 text-sm" style="color: var(--color-muted);">Dernier lavage 1h avant la fermeture.</p>
+
+          <div class="mt-8 inline-flex items-center gap-3 px-4 py-3 border rounded-sm" style="border-color: var(--color-line); background: rgba(247,243,234,0.6);">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <ellipse cx="9" cy="9" rx="4" ry="7.5" transform="rotate(-28 9 9)" fill="#3d5a2a" opacity="0.45"/>
+              <ellipse cx="9" cy="9" rx="4" ry="7.5" transform="rotate(28 9 9)"  fill="#3d5a2a" opacity="0.45"/>
+              <circle  cx="9" cy="9" r="2.5" fill="#b5673a" opacity="0.65"/>
+            </svg>
+            <p class="text-sm" style="color: var(--color-muted-strong);">Machines désinfectées <strong>2 fois par jour</strong></p>
+          </div>
         </div>
 
         <div class="lg:col-span-12 mt-4 lg:mt-8">
-          <div class="relative aspect-[16/10] sm:aspect-[21/9] overflow-hidden border border-line bg-bg-elev">
+          <div class="relative aspect-[16/10] sm:aspect-[21/9] overflow-hidden border" style="border-color: var(--color-line);">
             <iframe
               src="https://maps.google.com/maps?q=16+rue+Bajon+47000+Agen&z=17&output=embed"
               class="absolute inset-0 w-full h-full"
@@ -337,37 +436,56 @@ const faq = [
               referrerpolicy="no-referrer-when-downgrade"
               title="Carte, Laverie du Floréal à Agen"
             ></iframe>
-            <a
-              href={mapsUrl}
-              target="_blank"
-              rel="noopener"
-              class="absolute inset-0 z-10"
-              aria-label="Ouvrir la Laverie du Floréal dans Google Maps"
-            ></a>
+            <a href={mapsUrl} target="_blank" rel="noopener" class="absolute inset-0 z-10" aria-label="Ouvrir la Laverie du Floréal dans Google Maps"></a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- FAQ -->
-    <section id="faq" class="border-b border-line bg-bg-elev">
-      <div class="max-w-[1240px] mx-auto px-5 sm:px-8 py-20 sm:py-28 grid lg:grid-cols-12 gap-10 reveal-on-scroll">
+    <!-- ══════════════════════════════════════════════════════════════
+         FAQ — fond légèrement élevé, petite fleur décor
+    ═══════════════════════════════════════════════════════════════ -->
+    <section id="faq" class="border-b border-line relative overflow-hidden" style="background: rgba(237,231,214,0.55);">
+
+      <!-- Petite branche haute gauche, respirante -->
+      <div class="absolute top-0 left-0 w-[200px] h-[260px] pointer-events-none select-none" aria-hidden="true">
+        <svg class="w-full h-full botanical-blend botanical-breathe" viewBox="0 0 200 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M40 0 C38 50 32 95 44 145 C56 195 48 230 40 260" stroke="#3d5a2a" stroke-width="1.5" stroke-linecap="round" opacity="0.22"/>
+          <ellipse cx="22"  cy="60"  rx="12" ry="24" transform="rotate(-38 22 60)"   fill="#3d5a2a" opacity="0.18"/>
+          <ellipse cx="60"  cy="42"  rx="11" ry="22" transform="rotate(35 60 42)"    fill="#3d5a2a" opacity="0.16"/>
+          <ellipse cx="20"  cy="118" rx="11" ry="22" transform="rotate(-36 20 118)"  fill="#3d5a2a" opacity="0.16"/>
+          <ellipse cx="62"  cy="100" rx="10" ry="20" transform="rotate(32 62 100)"   fill="#3d5a2a" opacity="0.15"/>
+          <ellipse cx="22"  cy="178" rx="10" ry="20" transform="rotate(-34 22 178)"  fill="#3d5a2a" opacity="0.15"/>
+          <!-- Petite fleur terracotta en haut -->
+          <g opacity="0.20">
+            <ellipse cx="40" cy="4"  rx="5" ry="11" fill="#b5673a"/>
+            <ellipse cx="40" cy="4"  rx="5" ry="11" transform="rotate(60 40 14)"  fill="#b5673a"/>
+            <ellipse cx="40" cy="4"  rx="5" ry="11" transform="rotate(120 40 14)" fill="#b5673a"/>
+            <ellipse cx="40" cy="4"  rx="5" ry="11" transform="rotate(180 40 14)" fill="#b5673a"/>
+            <ellipse cx="40" cy="4"  rx="5" ry="11" transform="rotate(240 40 14)" fill="#b5673a"/>
+            <ellipse cx="40" cy="4"  rx="5" ry="11" transform="rotate(300 40 14)" fill="#b5673a"/>
+            <circle  cx="40" cy="14" r="4" fill="#b5673a"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8 py-20 sm:py-28 grid lg:grid-cols-12 gap-10 reveal-on-scroll">
         <div class="lg:col-span-4">
           <p class="eyebrow mb-3">Avant de venir</p>
           <h2 class="font-medium tracking-tight" style="font-size: var(--text-h2);">
-            Questions <em class="font-display italic font-light text-muted-strong">fréquentes.</em>
+            Questions <em class="font-display italic font-light" style="color: var(--color-muted-strong);">fréquentes.</em>
           </h2>
         </div>
         <div class="lg:col-span-8">
-          <ul class="border-y border-line divide-y divide-line">
+          <ul class="border-y divide-y" style="border-color: var(--color-line);">
             {faq.map((item) => (
               <li>
                 <details>
-                  <summary class="py-5 sm:py-6 flex items-center justify-between gap-6">
+                  <summary class="py-5 sm:py-6 flex items-center justify-between gap-6 cursor-pointer">
                     <span class="text-base sm:text-lg font-medium pr-4">{item.q}</span>
-                    <span class="faq-toggle text-3xl text-muted leading-none font-light shrink-0">+</span>
+                    <span class="faq-toggle text-3xl font-light shrink-0" style="color: var(--color-muted);">+</span>
                   </summary>
-                  <p class="faq-answer pb-6 pr-12 text-muted-strong leading-relaxed">{item.a}</p>
+                  <p class="faq-answer pb-6 pr-12 leading-relaxed" style="color: var(--color-muted-strong);">{item.a}</p>
                 </details>
               </li>
             ))}
@@ -376,28 +494,47 @@ const faq = [
       </div>
     </section>
 
-    <!-- Contact -->
-    <section id="contact" class="relative overflow-hidden">
-      <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full blur-3xl" style="background: rgba(181, 104, 59, 0.18);"></div>
-        <div class="absolute top-1/4 right-1/4 w-[400px] h-[400px] rounded-full blur-2xl" style="background: rgba(181, 104, 59, 0.08);"></div>
+    <!-- ══════════════════════════════════════════════════════════════
+         CONTACT — fleur immense derrière, transparente
+    ═══════════════════════════════════════════════════════════════ -->
+    <section id="contact" class="relative overflow-hidden" style="background: transparent;">
+
+      <!-- Immense fleur centrale, mix-blend, dérive infime -->
+      <div class="absolute inset-0 flex items-center justify-center pointer-events-none select-none" aria-hidden="true">
+        <svg class="w-[700px] h-[700px] botanical-blend botanical-drift" viewBox="0 0 700 700" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <g opacity="0.09">
+            <ellipse cx="350" cy="80"  rx="30" ry="80" fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(20 350 350)"  fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(40 350 350)"  fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(60 350 350)"  fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(80 350 350)"  fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(100 350 350)" fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(120 350 350)" fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(140 350 350)" fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(160 350 350)" fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(180 350 350)" fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(200 350 350)" fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(220 350 350)" fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(240 350 350)" fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(260 350 350)" fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(280 350 350)" fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(300 350 350)" fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(320 350 350)" fill="#3d5a2a"/>
+            <ellipse cx="350" cy="80"  rx="30" ry="80" transform="rotate(340 350 350)" fill="#3d5a2a"/>
+            <circle  cx="350" cy="350" r="52"           fill="#b5673a"/>
+          </g>
+        </svg>
       </div>
 
       <div class="relative max-w-[1240px] mx-auto px-5 sm:px-8 py-24 sm:py-32 text-center reveal-on-scroll">
         <p class="eyebrow mb-6">Contact</p>
         <h2 class="font-medium tracking-tight max-w-2xl mx-auto leading-[1.05]" style="font-size: var(--text-display);">
           Une question ?<br/>
-          <em class="font-display italic font-light text-muted-strong">On répond vite.</em>
+          <em class="font-display italic font-light" style="color: var(--color-muted-strong);">On répond vite.</em>
         </h2>
-
         <div class="mt-12 flex flex-wrap items-center justify-center gap-3">
-          <a href="tel:0768740073" class="cta">
-            07 68 74 00 73
-            <span aria-hidden="true">→</span>
-          </a>
-          <a href="mailto:laveriedufloreal@gmail.com" class="cta-ghost">
-            laveriedufloreal@gmail.com
-          </a>
+          <a href="tel:0768740073" class="cta">07 68 74 00 73 <span aria-hidden="true">→</span></a>
+          <a href="mailto:laveriedufloreal@gmail.com" class="cta-ghost">laveriedufloreal@gmail.com</a>
         </div>
       </div>
     </section>

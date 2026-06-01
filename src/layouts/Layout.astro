@@ -39,6 +39,16 @@ const {
     <meta name="twitter:image" content="https://images.unsplash.com/photo-1521656693074-0ef32e80a5d5?auto=format&fit=crop&w=1200&q=80" />
   </head>
   <body class="bg-bg text-fg antialiased">
+    <!-- Canvas des pétales flottants — plein écran, derrière tout -->
+    <canvas id="floreal-canvas" aria-hidden="true"></canvas>
+
+    <!-- Orbs ambiants fixes (style 21st.dev) — flottent sur toute la page -->
+    <div aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;">
+      <div style="position:absolute;width:600px;height:600px;top:-150px;left:-120px;border-radius:50%;background:radial-gradient(circle,rgba(90,107,72,0.28) 0%,transparent 70%);filter:blur(80px);animation:orb-drift-1 24s ease-in-out infinite alternate;will-change:transform;"></div>
+      <div style="position:absolute;width:700px;height:700px;top:10vh;right:-200px;border-radius:50%;background:radial-gradient(circle,rgba(181,103,58,0.22) 0%,transparent 70%);filter:blur(100px);animation:orb-drift-2 32s ease-in-out infinite alternate;will-change:transform;"></div>
+      <div style="position:absolute;width:500px;height:500px;bottom:10vh;left:20%;border-radius:50%;background:radial-gradient(circle,rgba(140,100,60,0.20) 0%,transparent 70%);filter:blur(90px);animation:orb-drift-3 28s ease-in-out infinite alternate;will-change:transform;"></div>
+    </div>
+
     <slot />
 
     <script>
@@ -57,6 +67,114 @@ const {
       } else {
         targets.forEach((el) => el.classList.add('is-visible'));
       }
+    </script>
+
+    <!-- Pétales flottants canvas (vanilla JS, ~1 ko, style 21st.dev) -->
+    <script>
+      (function () {
+        const canvas = document.getElementById('floreal-canvas') as HTMLCanvasElement | null
+        if (!canvas) return
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return
+
+        // Respecte prefers-reduced-motion
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        if (prefersReduced) { canvas.style.display = 'none'; return }
+
+        // Couleurs botaniques : vert olive + terracotta
+        const COLORS = [
+          'rgba(61, 90, 42,',   // vert foncé
+          'rgba(90, 107, 72,',  // vert moyen
+          'rgba(181, 103, 58,', // terracotta
+          'rgba(140, 100, 60,', // ocre
+        ]
+
+        type Petal = {
+          x: number; y: number
+          size: number
+          color: string
+          opacity: number
+          speed: number       // vitesse montée
+          drift: number       // dérive horizontale
+          angle: number       // rotation actuelle
+          rotSpeed: number    // vitesse rotation
+          phase: number       // phase opacité
+        }
+
+        const COUNT = 28
+        const petals: Petal[] = []
+
+        function resize() {
+          canvas!.width  = window.innerWidth
+          canvas!.height = window.innerHeight
+        }
+        resize()
+        window.addEventListener('resize', resize)
+
+        function spawn(p?: Petal): Petal {
+          const size = 3 + Math.random() * 6
+          return {
+            x:        Math.random() * (canvas!.width  + 200) - 100,
+            y:        p ? canvas!.height + size * 2 : Math.random() * canvas!.height,
+            size,
+            color:    COLORS[Math.floor(Math.random() * COLORS.length)],
+            opacity:  0,
+            speed:    0.25 + Math.random() * 0.55,
+            drift:    (Math.random() - 0.5) * 0.4,
+            angle:    Math.random() * Math.PI * 2,
+            rotSpeed: (Math.random() - 0.5) * 0.018,
+            phase:    Math.random() * Math.PI * 2,
+          }
+        }
+
+        for (let i = 0; i < COUNT; i++) petals.push(spawn())
+
+        let t = 0
+        function drawLeaf(x: number, y: number, size: number, angle: number, color: string, opacity: number) {
+          ctx!.save()
+          ctx!.translate(x, y)
+          ctx!.rotate(angle)
+          ctx!.beginPath()
+          // Silhouette feuille simple : ellipse légèrement effilée
+          ctx!.ellipse(0, 0, size * 0.45, size, 0, 0, Math.PI * 2)
+          ctx!.fillStyle = color + opacity.toFixed(2) + ')'
+          ctx!.fill()
+          // Nervure centrale
+          ctx!.beginPath()
+          ctx!.moveTo(0, -size)
+          ctx!.lineTo(0,  size)
+          ctx!.strokeStyle = color + (opacity * 0.4).toFixed(2) + ')'
+          ctx!.lineWidth = 0.6
+          ctx!.stroke()
+          ctx!.restore()
+        }
+
+        function loop() {
+          ctx!.clearRect(0, 0, canvas!.width, canvas!.height)
+          t += 0.008
+
+          for (const p of petals) {
+            // Montée + légère oscillation sinusoïdale
+            p.y     -= p.speed
+            p.x     += p.drift + Math.sin(t + p.phase) * 0.3
+            p.angle += p.rotSpeed
+
+            // Fondu in/out selon position verticale
+            const progress = 1 - p.y / canvas!.height
+            p.opacity = Math.min(1, progress * 4) * Math.min(1, (1 - progress) * 6) * 0.55
+
+            drawLeaf(p.x, p.y, p.size, p.angle, p.color, p.opacity)
+
+            // Respawn quand la feuille sort en haut
+            if (p.y < -p.size * 3) {
+              Object.assign(p, spawn(p))
+            }
+          }
+
+          requestAnimationFrame(loop)
+        }
+        requestAnimationFrame(loop)
+      })()
     </script>
 
     <script>

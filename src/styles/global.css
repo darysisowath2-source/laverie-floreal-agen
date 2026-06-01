@@ -1,54 +1,59 @@
 @import "tailwindcss";
 
 @theme {
-  /* Palette botanique chaude, ivoire + vert foret + terracotta (Floreal) */
-  --color-bg: #f7f5ee;
-  --color-bg-elev: #ede8db;
-  --color-fg: #20301f;
-  --color-muted: #5f6e54;
-  --color-muted-strong: #34442d;
-  --color-line: rgba(32, 48, 31, 0.12);
-  --color-line-strong: rgba(32, 48, 31, 0.22);
-  --color-accent: #b5683b;
-  --color-accent-soft: rgba(181, 104, 59, 0.10);
+  /* Nature Distilled — crème chaude, olive, terracotta */
+  --color-bg:           #f7f3ea;
+  --color-bg-elev:      #ede7d6;
+  --color-bg-warm:      #e8dfca;
+  --color-fg:           #1e2d14;
+  --color-muted:        #5c6b48;
+  --color-muted-strong: #2e4020;
+  --color-line:         rgba(30, 45, 20, 0.11);
+  --color-line-strong:  rgba(30, 45, 20, 0.20);
+  --color-accent:       #b5673a;
+  --color-accent-soft:  rgba(181, 103, 58, 0.10);
 
-  /* Fonts (chargées via Google Fonts dans Layout.astro) */
-  --font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-sans:    "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Fraunces", "Hanken Grotesk", ui-serif, Georgia, serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --font-mono:    ui-monospace, "SF Mono", Menlo, monospace;
 
-  /* Type scale (fluide) */
   --text-display-xl: clamp(3.25rem, 9vw, 7.5rem);
-  --text-display: clamp(2.5rem, 5.5vw, 4.75rem);
-  --text-h2: clamp(1.875rem, 3.2vw, 2.75rem);
-  --text-h3: clamp(1.25rem, 1.8vw, 1.5rem);
-  --text-eyebrow: 0.72rem;
+  --text-display:    clamp(2.5rem, 5.5vw, 4.75rem);
+  --text-h2:         clamp(1.875rem, 3.2vw, 2.75rem);
+  --text-h3:         clamp(1.25rem, 1.8vw, 1.5rem);
+  --text-eyebrow:    0.72rem;
 
-  /* Radius (parcimonieux, pas de cards arrondies génériques) */
   --radius-sm: 2px;
   --radius-md: 4px;
 }
 
-/* Reset léger complémentaire au preflight Tailwind */
+/* ── Reset de base ─────────────────────────────────────────────────── */
 html {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   background: var(--color-bg);
-  /* scroll-behavior géré par Lenis */
 }
-
-/* Décale les ancres pour qu'elles ne s'affichent pas sous la nav fixe */
-section[id] {
-  scroll-margin-top: 72px;
-}
+section[id] { scroll-margin-top: 72px; }
 
 body {
   font-family: var(--font-sans);
   background: var(--color-bg);
   color: var(--color-fg);
-  font-feature-settings: "ss01", "cv11", "calt";
   line-height: 1.55;
   font-weight: 400;
+  position: relative;
+}
+
+/* ── Grain papier herbier — couche unique sur tout le body ─────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.38;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.08'/%3E%3C/svg%3E");
+  background-size: 256px 256px;
 }
 
 ::selection {
@@ -56,11 +61,11 @@ body {
   color: var(--color-bg);
 }
 
-/* Typo éditoriale */
+/* ── Typo ──────────────────────────────────────────────────────────── */
 .font-display {
   font-family: var(--font-display);
   font-feature-settings: "ss01", "salt";
-  letter-spacing: -0.025em;
+  letter-spacing: -0.02em;
 }
 
 .eyebrow {
@@ -72,28 +77,91 @@ body {
   font-weight: 500;
 }
 
-/* Hairline horizontale, signature éditoriale */
-.hairline {
-  height: 1px;
-  background: var(--color-line);
-  border: 0;
+.dot {
+  display: inline-block;
+  width: 4px; height: 4px;
+  border-radius: 999px;
+  background: var(--color-accent);
+  vertical-align: middle;
 }
 
-/* Lien souligné avec animation discrète */
-.link {
-  position: relative;
-  color: var(--color-fg);
-  text-decoration: none;
-  border-bottom: 1px solid var(--color-line-strong);
-  padding-bottom: 1px;
-  transition: border-color 200ms ease, color 200ms ease;
+/* ── Botaniques SVG animés ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  .botanical-breathe {
+    transform-origin: center bottom;
+    animation: breathe 9s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .botanical-sway {
+    transform-origin: 50% 100%;
+    animation: sway 12s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  .botanical-drift {
+    animation: drift 14s ease-in-out infinite alternate;
+    will-change: transform;
+  }
 }
-.link:hover {
-  color: var(--color-accent);
-  border-bottom-color: var(--color-accent);
+@keyframes breathe {
+  from { transform: scale(1)    rotate(0deg); }
+  to   { transform: scale(1.04) rotate(0.8deg); }
+}
+@keyframes sway {
+  from { transform: rotate(-1.5deg) translateX(0); }
+  to   { transform: rotate(1.5deg)  translateX(4px); }
+}
+@keyframes drift {
+  from { transform: translateY(0)   rotate(0deg); }
+  to   { transform: translateY(-8px) rotate(1deg); }
+}
+.botanical-blend { mix-blend-mode: multiply; }
+
+/* ── Orbs ambiants (style 21st.dev — blobs floutés en fond) ────────── */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  select: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .orb-1 { animation: orb-drift-1 24s ease-in-out infinite alternate; }
+  .orb-2 { animation: orb-drift-2 32s ease-in-out infinite alternate; }
+  .orb-3 { animation: orb-drift-3 28s ease-in-out infinite alternate; }
+}
+@keyframes orb-drift-1 {
+  0%   { transform: translate(0px,    0px)   scale(1);    }
+  25%  { transform: translate(60px,  -50px)  scale(1.08); }
+  50%  { transform: translate(30px,   40px)  scale(0.95); }
+  75%  { transform: translate(-40px, -20px)  scale(1.04); }
+  100% { transform: translate(20px,   30px)  scale(1);    }
+}
+@keyframes orb-drift-2 {
+  0%   { transform: translate(0px,   0px)   scale(1);    }
+  30%  { transform: translate(-70px, 60px)  scale(1.10); }
+  60%  { transform: translate(50px, -40px)  scale(0.92); }
+  100% { transform: translate(-20px, 30px)  scale(1.05); }
+}
+@keyframes orb-drift-3 {
+  0%   { transform: translate(0px,   0px)  scale(1);    }
+  40%  { transform: translate(80px,  50px) scale(1.06); }
+  70%  { transform: translate(-30px,-60px) scale(0.96); }
+  100% { transform: translate(10px,  20px) scale(1.02); }
 }
 
-/* CTA principal, sobre, pas de gradient */
+/* Canvas des pétales flottants — plein écran, z négatif */
+#floreal-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
+}
+/* Le contenu passe devant le canvas */
+main, header, footer { position: relative; z-index: 1; }
+
+/* ── CTA ───────────────────────────────────────────────────────────── */
 .cta {
   display: inline-flex;
   align-items: center;
@@ -105,14 +173,10 @@ body {
   font-size: 0.92rem;
   border-radius: var(--radius-sm);
   transition: transform 180ms ease, background 180ms ease;
+  cursor: pointer;
 }
-.cta:hover {
-  background: var(--color-accent);
-  color: var(--color-bg);
-  transform: translateY(-1px);
-}
+.cta:hover { background: var(--color-accent); transform: translateY(-1px); }
 
-/* CTA secondaire, fantôme */
 .cta-ghost {
   display: inline-flex;
   align-items: center;
@@ -124,40 +188,21 @@ body {
   font-size: 0.92rem;
   border-radius: var(--radius-sm);
   transition: border-color 180ms ease, color 180ms ease;
+  cursor: pointer;
 }
-.cta-ghost:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
+.cta-ghost:hover { border-color: var(--color-accent); color: var(--color-accent); }
 
-/* Grille de chiffres, type ratio éditorial */
-.dot {
-  display: inline-block;
-  width: 4px;
-  height: 4px;
-  border-radius: 999px;
-  background: var(--color-accent);
-  vertical-align: middle;
+/* ── Lien ──────────────────────────────────────────────────────────── */
+.link {
+  color: var(--color-fg);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-line-strong);
+  padding-bottom: 1px;
+  transition: border-color 200ms ease, color 200ms ease;
 }
+.link:hover { color: var(--color-accent); border-bottom-color: var(--color-accent); }
 
-/* Animation d'apparition simple, sans JS */
-@media (prefers-reduced-motion: no-preference) {
-  .reveal {
-    opacity: 0;
-    transform: translateY(8px);
-    animation: reveal 700ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
-  }
-  .reveal-delay-1 { animation-delay: 80ms; }
-  .reveal-delay-2 { animation-delay: 160ms; }
-  .reveal-delay-3 { animation-delay: 240ms; }
-  .reveal-delay-4 { animation-delay: 320ms; }
-}
-
-@keyframes reveal {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Stagger d'entrée hero — chaque élément porte --hi: 0,1,2… */
+/* ── Hero stagger ──────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: no-preference) {
   .hero-item {
     opacity: 0;
@@ -165,54 +210,9 @@ body {
     animation: hero-enter 800ms cubic-bezier(0.2, 0.7, 0.2, 1) calc(var(--hi, 0) * 130ms) both;
   }
 }
+@keyframes hero-enter { to { opacity: 1; transform: translateY(0); } }
 
-@keyframes hero-enter {
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* Section foncée (chiffres clés) */
-.section-dark {
-  background: var(--color-fg);
-  color: var(--color-bg);
-}
-.section-dark .eyebrow {
-  color: rgba(243, 248, 253, 0.40);
-}
-
-/* Texture grain légère sur le hero */
-.grain::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  opacity: 0.35;
-}
-
-/* FAQ, accordéon natif <details>, sans JS */
-details > summary {
-  list-style: none;
-  cursor: pointer;
-}
-details > summary::-webkit-details-marker { display: none; }
-
-details .faq-toggle {
-  display: inline-block;
-  transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
-}
-details[open] .faq-toggle {
-  transform: rotate(45deg);
-}
-
-details[open] .faq-answer {
-  animation: faq-reveal 260ms ease-out;
-}
-@keyframes faq-reveal {
-  from { opacity: 0; transform: translateY(-2px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Apparition douce au scroll, activée par IntersectionObserver dans Layout.astro */
+/* ── Révélation au scroll ──────────────────────────────────────────── */
 @media (prefers-reduced-motion: no-preference) {
   .reveal-on-scroll {
     opacity: 0;
@@ -222,11 +222,22 @@ details[open] .faq-answer {
       transform 800ms cubic-bezier(0.2, 0.7, 0.2, 1);
     will-change: opacity, transform;
   }
-  .reveal-on-scroll.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .reveal-on-scroll.is-visible { opacity: 1; transform: translateY(0); }
   .reveal-on-scroll[data-reveal-delay="1"] { transition-delay: 80ms; }
   .reveal-on-scroll[data-reveal-delay="2"] { transition-delay: 160ms; }
   .reveal-on-scroll[data-reveal-delay="3"] { transition-delay: 240ms; }
+}
+
+/* ── FAQ ───────────────────────────────────────────────────────────── */
+details > summary { list-style: none; cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }
+details .faq-toggle {
+  display: inline-block;
+  transition: transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+details[open] .faq-toggle { transform: rotate(45deg); }
+details[open] .faq-answer { animation: faq-reveal 260ms ease-out; }
+@keyframes faq-reveal {
+  from { opacity: 0; transform: translateY(-2px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
